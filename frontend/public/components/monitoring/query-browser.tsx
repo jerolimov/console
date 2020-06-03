@@ -74,8 +74,10 @@ export const Error: React.FC<ErrorProps> = ({ error, title = 'An error occurred'
 const GraphEmptyState: React.FC<GraphEmptyStateProps> = ({ children, title }) => (
   <div className="query-browser__wrapper graph-empty-state">
     <EmptyState variant={EmptyStateVariant.full}>
-      <EmptyStateIcon size="sm" icon={ChartLineIcon} />
-      <Title size="sm">{title}</Title>
+      <EmptyStateIcon icon={ChartLineIcon} />
+      <Title headingLevel="h2" size="md">
+        {title}
+      </Title>
       <EmptyStateBody>{children}</EmptyStateBody>
     </EmptyState>
   </div>
@@ -108,7 +110,7 @@ const SpanControls: React.FC<SpanControlsProps> = React.memo(
         <TextInput
           aria-label="graph timespan"
           className="query-browser__span-text"
-          isValid={isValid}
+          validated={isValid ? 'default' : 'error'}
           onChange={(v) => setSpan(v, true)}
           type="text"
           value={text}
@@ -221,12 +223,7 @@ const graphLabelComponent = <ChartTooltip center={{ x: 0, y: 0 }} flyoutComponen
 // Set activateData to false to work around VictoryVoronoiContainer crash (see
 // https://github.com/FormidableLabs/victory/issues/1314)
 const graphContainer = (
-  <ChartVoronoiContainer
-    activateData={false}
-    className="query-browser__graph-container"
-    labelComponent={graphLabelComponent}
-    labels={() => ''}
-  />
+  <ChartVoronoiContainer activateData={false} className="query-browser__graph-container" />
 );
 
 const LegendContainer = ({ children }: { children?: React.ReactNode }) => {
@@ -319,13 +316,23 @@ const Graph: React.FC<GraphProps> = React.memo(
         {isStack ? (
           <ChartStack>
             {_.map(data, (values, i) => (
-              <ChartArea key={i} data={values} />
+              <ChartArea
+                key={i}
+                data={values}
+                labels={() => ' '}
+                labelComponent={graphLabelComponent}
+              />
             ))}
           </ChartStack>
         ) : (
           <ChartGroup>
             {_.map(data, (values, i) => (
-              <ChartLine key={i} data={values} />
+              <ChartLine
+                key={i}
+                data={values}
+                labels={() => ' '}
+                labelComponent={graphLabelComponent}
+              />
             ))}
           </ChartGroup>
         )}

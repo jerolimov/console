@@ -22,7 +22,7 @@ const DynamicFormField: React.FC<DynamicFormFieldProps> = ({
   const { setFieldValue } = useFormikContext<FormikValues>();
 
   return (
-    <Grid gutter="md">
+    <Grid hasGutter>
       <GridItem xl={6} lg={6} md={12} sm={12}>
         <AsyncComponent
           loader={() => import('../dynamic-form').then((c) => c.DynamicForm)}

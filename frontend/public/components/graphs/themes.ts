@@ -1,3 +1,16 @@
+const pfDependentAxisTickLabels = {
+  padding: 5,
+  fontFamily: 'var(--pf-chart-global--FontFamily)',
+  letterSpacing: 'var(--pf-chart-global--letter-spacing)',
+  fill: 'rgb(79, 82, 85)',
+};
+const pfIndependentAxisTickLabels = Object.assign({}, pfDependentAxisTickLabels, { padding: 2 });
+const axisTicks = {
+  size: 5,
+  strokeWidth: 1,
+  stroke: '#d2d2d2',
+};
+
 export const areaTheme = {
   area: {
     style: {
@@ -7,16 +20,18 @@ export const areaTheme = {
     },
   },
   chart: {
-    padding: {
-      bottom: 30,
-      left: 60,
-      right: 10,
-      top: 0,
-    },
+    // padding changed to single numeric value
+    padding: 20,
   },
   dependentAxis: {
     style: {
+      axis: {
+        stroke: 'EDEDED',
+        strokeWidth: 2,
+      },
       grid: { stroke: '#EDEDED' },
+      tickLabels: pfDependentAxisTickLabels,
+      ticks: axisTicks,
     },
   },
 };
@@ -25,7 +40,7 @@ export const barTheme = {
   bar: {
     style: {
       labels: {
-        textAnchor: 'end',
+        textAnchor: 'end' as 'end',
       },
     },
   },
@@ -45,7 +60,7 @@ export const barTheme = {
         stroke: 'none',
       },
       tickLabels: {
-        textAnchor: 'start',
+        textAnchor: 'start' as 'start',
       },
     },
   },
@@ -53,12 +68,8 @@ export const barTheme = {
 
 export const queryBrowserTheme = {
   chart: {
-    padding: {
-      bottom: 0,
-      left: 0,
-      right: 0,
-      top: 0,
-    },
+    // padding changed to single numeric value
+    padding: 0,
   },
   dependentAxis: {
     style: {
@@ -68,20 +79,16 @@ export const queryBrowserTheme = {
       grid: {
         stroke: '#EDEDED',
       },
-      tickLabels: {
-        padding: 0,
-      },
+      ticks: axisTicks,
+      tickLabels: pfDependentAxisTickLabels,
     },
   },
   independentAxis: {
     style: {
-      tickLabels: {
-        padding: 2,
-      },
-      ticks: {
-        size: 5,
-        strokeWidth: 1,
-        stroke: '#d2d2d2',
+      ticks: axisTicks,
+      tickLabels: pfIndependentAxisTickLabels,
+      grid: {
+        stroke: 'none',
       },
     },
   },

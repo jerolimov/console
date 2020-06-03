@@ -488,6 +488,7 @@ $co-external-link-padding-right: 15px;
   [class*='col-'],
   .row {
     vertical-align: middle;
+    position: relative;
   }
   .co-m-table-grid {
     padding-left: 20px;
