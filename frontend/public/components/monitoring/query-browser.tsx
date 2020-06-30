@@ -53,12 +53,10 @@ import {
 
 const spans = ['5m', '15m', '30m', '1h', '2h', '6h', '12h', '1d', '2d', '1w', '2w'];
 const dropdownItems = _.zipObject(spans, spans);
-const chartTheme = getCustomTheme(
-  ChartThemeColor.multi,
-  ChartThemeVariant.light,
-  queryBrowserTheme,
-);
-export const colors = chartTheme.line.colorScale;
+// Note: Victory incorrectly typed ThemeBaseProps.padding as number instead of PaddingProps
+// @ts-ignore
+const theme = getCustomTheme(ChartThemeColor.multi, ChartThemeVariant.light, queryBrowserTheme);
+export const colors = theme.line.colorScale;
 
 // Use exponential notation for small or very large numbers to avoid labels with too many characters
 const formatPositiveValue = (v: number): string =>
@@ -308,7 +306,7 @@ const Graph: React.FC<GraphProps> = React.memo(
         domainPadding={{ y: 1 }}
         height={200}
         scale={{ x: 'time', y: 'linear' }}
-        theme={chartTheme}
+        theme={theme}
         width={width}
       >
         <ChartAxis style={xAxisStyle} tickCount={5} tickFormat={xTickFormat} />

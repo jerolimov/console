@@ -20,8 +20,12 @@ export const areaTheme = {
     },
   },
   chart: {
-    // padding changed to single numeric value
-    padding: 20,
+    padding: {
+      bottom: 30,
+      left: 60,
+      right: 10,
+      top: 0,
+    },
   },
   dependentAxis: {
     style: {
@@ -68,8 +72,12 @@ export const barTheme = {
 
 export const queryBrowserTheme = {
   chart: {
-    // padding changed to single numeric value
-    padding: 0,
+    padding: {
+      bottom: 0,
+      left: 0,
+      right: 0,
+      top: 0,
+    },
   },
   dependentAxis: {
     style: {
