@@ -215,6 +215,9 @@ h6 {
     .pf-c-app-launcher__toggle {
       font-size: $pf-header-icon-fontsize !important;
     }
+    .pf-c-notification-badge {
+      font-size: $pf-header-icon-fontsize;
+    }
   }
 
   &__main {
@@ -344,22 +347,22 @@ h6 {
       --pf-c-nav__simple-list-link--nested--PaddingLeft: var(--pf-global--spacer--xl);
     }
 
-    font-size: $co-side-nav-font-size;
+    .pf-c-nav__item.pf-m-expandable::before {
+      border-bottom: 0; // necessary due to enabling $pf-global--enable-shield: true;
+    }
 
-    .pf-c-nav__simple-list .pf-c-nav__link {
-      font-size: $font-size-base;
-      // fix bug where nav items retain focus after navigation
-      // see https://github.com/patternfly/patternfly-next/issues/2463
-      &:focus {
-        background-color: transparent;
-        color: var(--pf-global--Color--light-300); // escape PF var chaos
-        font-weight: var(--pf-c-nav__list-link--FontWeight);
+    .pf-c-nav__link {
+      font-size: $co-side-nav-section-font-size;
+      // Sets underline, necessary due to enabling $pf-global--enable-shield: true;
+      &::before {
+        border-bottom-width: 1px;
+        bottom: -1px;
       }
-      &:focus:hover,
-      &.pf-m-current:focus {
-        background-color: var(--pf-c-nav__simple-list-link--focus--BackgroundColor);
-        color: var(--pf-c-nav__simple-list-link--focus--Color);
-        font-weight: var(--pf-c-nav__simple-list-link--m-current--FontWeight);
+    }
+
+    .pf-c-nav__subnav {
+      .pf-c-nav__link {
+        font-size: $co-side-nav-font-size;
       }
     }
 
@@ -367,12 +370,6 @@ h6 {
     ul {
       list-style: none;
     }
-  }
-
-  // fix bug where nav items retain focus after navigation
-  // see https://github.com/patternfly/patternfly-next/issues/2463
-  .pf-c-nav__item.pf-m-current .pf-c-nav__simple-list .pf-c-nav__link:focus {
-    color: var(--pf-global--Color--light-100); // escape PF var chaos
   }
 }
 
