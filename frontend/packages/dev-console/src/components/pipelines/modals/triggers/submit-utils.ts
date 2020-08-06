@@ -2,7 +2,7 @@ import { RouteModel, ServiceModel } from '@console/internal/models';
 import { errorModal } from '@console/internal/components/modals';
 import { k8sCreate, k8sGet, K8sResourceKind, RouteKind } from '@console/internal/module/k8s';
 import { EventListenerModel, TriggerTemplateModel } from '../../../../models';
-import { Pipeline, PipelineRun } from '../../../../utils/pipeline-augment';
+import { Pipeline } from '../../../../utils/pipeline-augment';
 import {
   EventListenerKind,
   TriggerTemplateKind,
@@ -57,11 +57,15 @@ export const submitTrigger = async (
   const { triggerBinding } = formValues;
   const thisNamespace = pipeline.metadata.namespace;
 
-  const pipelineRun: PipelineRun = getPipelineRunFromForm(pipeline, formValues);
+  const labels = {};
+  const pipelineRun = getPipelineRunFromForm(pipeline, formValues, labels, {
+    generateName: true,
+  });
   const triggerTemplateParams: TriggerTemplateKindParam[] = triggerBinding.resource.spec.params.map(
     ({ name }) => ({ name } as TriggerTemplateKindParam),
   );
   const triggerTemplate: TriggerTemplateKind = createTriggerTemplate(
+    pipeline,
     pipelineRun,
     triggerTemplateParams,
   );

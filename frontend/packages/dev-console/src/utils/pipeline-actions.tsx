@@ -12,7 +12,10 @@ import {
   startPipelineModal,
   removeTriggerModal,
 } from '../components/pipelines/modals';
-import { getPipelineRunData } from '../components/pipelines/modals/common/utils';
+import {
+  getPipelineRunFromPipeline,
+  getPipelineRunFromPipelineRun,
+} from '../components/pipelines/modals/common/utils';
 import { StartedByLabel } from '../components/pipelines/const';
 import { EventListenerModel, PipelineModel, PipelineRunModel } from '../models';
 import { Pipeline, PipelineRun } from './pipeline-augment';
@@ -32,7 +35,7 @@ export const triggerPipeline = (
   pipeline: Pipeline,
   onSubmit?: (pipelineRun: PipelineRun) => void,
 ) => {
-  k8sCreate(PipelineRunModel, getPipelineRunData(pipeline))
+  k8sCreate(PipelineRunModel, getPipelineRunFromPipeline(pipeline))
     .then(onSubmit)
     .catch((err) => errorModal({ error: err.message }));
 };
@@ -43,7 +46,7 @@ export const reRunPipelineRun: KebabAction = (kind: K8sKind, pipelineRun: Pipeli
     const namespace = _.get(pipelineRun, 'metadata.namespace');
     const pipelineRef = _.get(pipelineRun, 'spec.pipelineRef.name');
     if (namespace && pipelineRef) {
-      k8sCreate(PipelineRunModel, getPipelineRunData(null, pipelineRun));
+      k8sCreate(PipelineRunModel, getPipelineRunFromPipelineRun(pipelineRun));
     } else {
       errorModal({ error: 'Invalid Pipeline Run configuration, unable to start Pipeline.' });
     }
@@ -129,7 +132,7 @@ const rerunPipeline: KebabAction = (
   return {
     ...sharedProps,
     callback: () => {
-      k8sCreate(PipelineRunModel, getPipelineRunData(null, pipelineRun))
+      k8sCreate(PipelineRunModel, getPipelineRunFromPipelineRun(pipelineRun))
         .then(typeof onComplete === 'function' ? onComplete : () => {})
         .catch((err) => errorModal({ error: err.message }));
     },

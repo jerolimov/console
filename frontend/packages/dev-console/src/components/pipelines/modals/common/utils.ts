@@ -39,60 +39,15 @@ export const migratePipelineRun = (pipelineRun: PipelineRun): PipelineRun => {
   return newPipelineRun;
 };
 
-export const getPipelineRunData = (
-  pipeline: Pipeline = null,
-  latestRun?: PipelineRun,
-): PipelineRun => {
-  if (!pipeline && !latestRun) {
-    // eslint-disable-next-line no-console
-    console.error('Missing parameters, unable to create new PipelineRun');
-    return null;
-  }
-
-  const pipelineName = pipeline ? pipeline.metadata.name : latestRun.spec.pipelineRef.name;
-
-  const resources = latestRun?.spec.resources;
-  const workspaces = latestRun?.spec.workspaces;
-
-  const latestRunParams = latestRun?.spec.params;
-  const pipelineParams = pipeline?.spec.params;
-  const params = latestRunParams || getPipelineRunParams(pipelineParams);
-
-  const newPipelineRun = {
-    apiVersion: pipeline ? pipeline.apiVersion : latestRun.apiVersion,
-    kind: PipelineRunModel.kind,
-    metadata: {
-      name: `${pipelineName}-${getRandomChars(6)}`,
-      namespace: pipeline ? pipeline.metadata.namespace : latestRun.metadata.namespace,
-      labels: _.merge({}, pipeline?.metadata?.labels, latestRun?.metadata?.labels, {
-        'tekton.dev/pipeline': pipelineName,
-      }),
-    },
-    spec: {
-      ...(latestRun?.spec || {}),
-      pipelineRef: {
-        name: pipelineName,
-      },
-      resources,
-      ...(params && { params }),
-      workspaces,
-      status: null,
-    },
-  };
-  return migratePipelineRun(newPipelineRun);
-};
-
 export const convertPipelineToModalData = (
   pipeline: Pipeline,
   alwaysCreateResources: boolean = false,
 ): CommonPipelineModalFormikValues => {
   const {
-    metadata: { namespace },
     spec: { params, resources },
   } = pipeline;
 
   return {
-    namespace,
     parameters: params || [],
     resources: (resources || []).map((resource: PipelineResource) => ({
       name: resource.name,
@@ -133,25 +88,86 @@ const convertResources = (resource: PipelineModalFormResource): PipelineRunResou
   } as PipelineRunReferenceResource;
 };
 
+const getPipelineRunLabels = (pipelineName: string, labels: { [key: string]: string }) => {
+  return {
+    ...labels,
+    'tekton.dev/pipeline': pipelineName,
+  };
+};
+
+const getPipelineRunMetadata = (
+  namespace: string,
+  pipelineName: string,
+  labels: { [key: string]: string },
+  options?: { generateName: boolean },
+): any => {
+  return {
+    namespace,
+    ...(options?.generateName
+      ? {
+          generateName: `${pipelineName}-`,
+        }
+      : {
+          name: `${pipelineName}-${getRandomChars()}`,
+        }),
+    labels: getPipelineRunLabels(pipelineName, labels),
+  };
+};
+
+export const getPipelineRunFromPipeline = (pipeline: Pipeline): PipelineRun => {
+  const { namespace, name: pipelineName, labels } = pipeline.metadata;
+
+  const newPipelineRun = {
+    apiVersion: pipeline.apiVersion,
+    kind: PipelineRunModel.kind,
+    metadata: getPipelineRunMetadata(namespace, pipelineName, labels),
+    spec: {
+      pipelineRef: {
+        name: pipelineName,
+      },
+      params: getPipelineRunParams(pipeline.spec.params),
+    },
+  };
+  return newPipelineRun;
+};
+
+export const getPipelineRunFromPipelineRun = (latestRun: PipelineRun): PipelineRun => {
+  const { namespace, labels } = latestRun.metadata;
+  const { name: pipelineName } = latestRun.spec.pipelineRef;
+
+  const newPipelineRun = {
+    apiVersion: latestRun.apiVersion,
+    kind: latestRun.kind,
+    metadata: getPipelineRunMetadata(namespace, pipelineName, labels),
+    spec: {
+      ...latestRun.spec,
+      status: null,
+    },
+  };
+  return migratePipelineRun(newPipelineRun);
+};
+
 export const getPipelineRunFromForm = (
   pipeline: Pipeline,
   formValues: CommonPipelineModalFormikValues,
-  labels?: { [key: string]: string },
-) => {
+  labels: { [key: string]: string },
+  options?: { generateName: boolean },
+): PipelineRun => {
+  const { namespace, name: pipelineName } = pipeline.metadata;
   const { parameters, resources, workspaces } = formValues;
 
-  const pipelineRunData: PipelineRun = {
-    metadata: {
-      labels,
-    },
+  const newPipelineRun: PipelineRun = {
+    apiVersion: pipeline.apiVersion,
+    kind: PipelineRunModel.kind,
+    metadata: getPipelineRunMetadata(namespace, pipelineName, labels, options),
     spec: {
       pipelineRef: {
-        name: pipeline.metadata.name,
+        name: pipelineName,
       },
       params: getPipelineRunParams(parameters),
       resources: resources.map(convertResources),
       workspaces: getPipelineRunWorkspaces(workspaces),
     },
   };
-  return getPipelineRunData(pipeline, pipelineRunData);
+  return newPipelineRun;
 };
