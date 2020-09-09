@@ -17,6 +17,8 @@ export const pipelineRunStatus = (pipelineRun): string => {
     ? 'Succeeded'
     : condition.status === 'False'
     ? 'Failed'
+    : condition.status === 'Unknown' && condition.reason === 'Started'
+    ? 'Unknown'
     : 'Running';
 };
 
