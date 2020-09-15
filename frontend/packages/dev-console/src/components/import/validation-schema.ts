@@ -159,8 +159,8 @@ export const limitsValidationSchema = yup.object().shape({
         },
         message: 'CPU request must be less than or equal to limit.',
       }),
-    requestUnit: yup.string('Unit must be millicores or cores.').ensure(),
-    limitUnit: yup.string('Unit must be millicores or cores.').ensure(),
+    requestUnit: yup.string().ensure(),
+    limitUnit: yup.string().ensure(),
     limit: yup
       .number()
       .transform((limit) => (_.isNaN(limit) ? undefined : limit))
@@ -197,7 +197,7 @@ export const limitsValidationSchema = yup.object().shape({
         },
         message: 'Memory request must be less than or equal to limit.',
       }),
-    requestUnit: yup.string('Unit must be Mi or Gi.'),
+    requestUnit: yup.string(),
     limit: yup
       .number()
       .transform((limit) => (_.isNaN(limit) ? undefined : limit))
@@ -215,7 +215,7 @@ export const limitsValidationSchema = yup.object().shape({
         },
         message: 'Memory limit must be greater than or equal to request.',
       }),
-    limitUnit: yup.string('Unit must be Mi or Gi.'),
+    limitUnit: yup.string(),
   }),
 });
 

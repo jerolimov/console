@@ -180,7 +180,7 @@ export const sourceDataSpecSchema = yup
     }),
   });
 
-export const eventSourceValidationSchema = yup.lazy((formData) => {
+export const eventSourceValidationSchema: any = yup.lazy((formData: any) => {
   if (isKnownEventSource(formData.type)) {
     return yup.object().shape({
       project: projectNameValidationSchema,
@@ -195,7 +195,7 @@ export const eventSourceValidationSchema = yup.lazy((formData) => {
   });
 });
 
-export const addChannelValidationSchema = yup.lazy((formData) => {
+export const addChannelValidationSchema = yup.lazy((formData: any) => {
   if (isDefaultChannel(getChannelKind(formData.type))) {
     return yup.object().shape({
       application: applicationNameValidationSchema,
