@@ -345,7 +345,7 @@ export const getPipelineRunWorkspaces = (
     pipelineWorkspaces &&
     pipelineWorkspaces.map((workspace) => ({
       name: workspace.name,
-      ...workspace.data,
+      [workspace.type]: workspace[workspace.type],
     }))
   );
 };

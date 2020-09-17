@@ -57,44 +57,43 @@ export const formResources = yup.array().of(
   }),
 );
 
-const volumeTypeSchema = yup
-  .object()
-  .when('type', {
-    is: (type) => VolumeTypes[type] === VolumeTypes.Secret,
+const workspaceSchema = yup.object().shape({
+  type: yup.string().required('Required'),
+  emptyDir: yup.object().when('type', {
+    is: VolumeTypes.EmptyDirectory,
+    then: yup.object().required('Required'),
+  }),
+  secret: yup.object().when('type', {
+    is: VolumeTypes.Secret,
     then: yup.object().shape({
-      secret: yup.object().shape({
-        secretName: yup.string().required('Required'),
-        items: yup.array().of(
-          yup.object().shape({
-            key: yup.string().required('Required'),
-            path: yup.string().required('Required'),
-          }),
-        ),
-      }),
+      secretName: yup.string().required('Required'),
+      items: yup.array().of(
+        yup.object().shape({
+          key: yup.string().required('Required'),
+          path: yup.string().required('Required'),
+        }),
+      ),
     }),
-  })
-  .when('type', {
-    is: (type) => VolumeTypes[type] === VolumeTypes.ConfigMap,
+  }),
+  configMap: yup.object().when('type', {
+    is: VolumeTypes.ConfigMap,
     then: yup.object().shape({
-      configMap: yup.object().shape({
-        name: yup.string().required('Required'),
-        items: yup.array().of(
-          yup.object().shape({
-            key: yup.string().required('Required'),
-            path: yup.string().required('Required'),
-          }),
-        ),
-      }),
+      name: yup.string().required('Required'),
+      items: yup.array().of(
+        yup.object().shape({
+          key: yup.string().required('Required'),
+          path: yup.string().required('Required'),
+        }),
+      ),
     }),
-  })
-  .when('type', {
-    is: (type) => VolumeTypes[type] === VolumeTypes.PVC,
+  }),
+  persistentVolumeClaim: yup.object().when('type', {
+    is: VolumeTypes.PVC,
     then: yup.object().shape({
-      persistentVolumeClaim: yup.object().shape({
-        claimName: yup.string().required('Required'),
-      }),
+      claimName: yup.string().required('Required'),
     }),
-  });
+  }),
+});
 
 const commonPipelineSchema = yup.object().shape({
   parameters: yup.array().of(
@@ -108,12 +107,7 @@ const commonPipelineSchema = yup.object().shape({
 });
 
 export const startPipelineSchema = commonPipelineSchema.shape({
-  workspaces: yup.array().of(
-    yup.object().shape({
-      type: yup.string().required('Required'),
-      data: volumeTypeSchema,
-    }),
-  ),
+  workspaces: yup.array().of(workspaceSchema),
   secretOpen: yup.boolean().equals([false]),
 });
 

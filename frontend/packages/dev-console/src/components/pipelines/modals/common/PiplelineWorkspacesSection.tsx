@@ -1,20 +1,20 @@
 import * as React from 'react';
-import { useFormikContext, FormikValues, useField } from 'formik';
+import { useField } from 'formik';
 import { SecretModel, ConfigMapModel } from '@console/internal/models';
 import { DropdownField } from '@console/shared';
 import { PipelineWorkspace } from '../../../../utils/pipeline-augment';
 import FormSection from '../../../import/section/FormSection';
-import { VolumeTypes } from '../../const';
+import { VolumeTypes, pipelineWorkspaceTypeSelections } from '../../const';
 import PVCDropdown from './PVCDropdown';
 import MultipleResourceKeySelector from './MultipleResourceKeySelector';
 
 const getVolumeTypeFields = (volumeType: VolumeTypes, index: number) => {
-  switch (VolumeTypes[volumeType]) {
+  switch (volumeType) {
     case VolumeTypes.Secret: {
       return (
         <MultipleResourceKeySelector
-          resourceNameField={`workspaces.${index}.data.secret.secretName`}
-          resourceKeysField={`workspaces.${index}.data.secret.items`}
+          resourceNameField={`workspaces.${index}.secret.secretName`}
+          resourceKeysField={`workspaces.${index}.secret.items`}
           label="Secret"
           resourceModel={SecretModel}
           addString="Add item"
@@ -25,8 +25,8 @@ const getVolumeTypeFields = (volumeType: VolumeTypes, index: number) => {
     case VolumeTypes.ConfigMap: {
       return (
         <MultipleResourceKeySelector
-          resourceNameField={`workspaces.${index}.data.configMap.name`}
-          resourceKeysField={`workspaces.${index}.data.configMap.items`}
+          resourceNameField={`workspaces.${index}.configMap.name`}
+          resourceKeysField={`workspaces.${index}.configMap.items`}
           label="Config Map"
           resourceModel={ConfigMapModel}
           addString="Add item"
@@ -35,7 +35,7 @@ const getVolumeTypeFields = (volumeType: VolumeTypes, index: number) => {
       );
     }
     case VolumeTypes.PVC: {
-      return <PVCDropdown name={`workspaces.${index}.data.persistentVolumeClaim.claimName`} />;
+      return <PVCDropdown name={`workspaces.${index}.persistentVolumeClaim.claimName`} />;
     }
     default:
       return null;
@@ -43,7 +43,6 @@ const getVolumeTypeFields = (volumeType: VolumeTypes, index: number) => {
 };
 
 const PipelineWorkspacesSection: React.FC = () => {
-  const { setFieldValue } = useFormikContext<FormikValues>();
   const [{ value: workspaces }] = useField<PipelineWorkspace[]>('workspaces');
   return (
     workspaces.length > 0 && (
@@ -53,13 +52,7 @@ const PipelineWorkspacesSection: React.FC = () => {
             <DropdownField
               name={`workspaces.${index}.type`}
               label={workspace.name}
-              items={VolumeTypes}
-              onChange={(type) =>
-                setFieldValue(
-                  `workspaces.${index}.data`,
-                  VolumeTypes[type] === VolumeTypes.EmptyDirectory ? { emptyDir: {} } : {},
-                )
-              }
+              items={pipelineWorkspaceTypeSelections}
               fullWidth
               required
             />
