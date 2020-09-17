@@ -180,7 +180,7 @@ export const sourceDataSpecSchema = yup
     }),
   });
 
-export const eventSourceValidationSchema = yup.lazy((formData) => {
+export const eventSourceValidationSchema = yup.lazy((formData: any) => {
   if (isKnownEventSource(formData.type)) {
     return yup.object().shape({
       project: projectNameValidationSchema,
@@ -193,9 +193,11 @@ export const eventSourceValidationSchema = yup.lazy((formData) => {
   return yup.object().shape({
     yamlData: yup.string(),
   });
-});
+  // Add missing function on Lazy type definition
+  // See https://github.com/jquense/yup/blob/master/src/Lazy.js
+}) as yup.Lazy & { resolve: (data: any) => yup.Schema<any, any> };
 
-export const addChannelValidationSchema = yup.lazy((formData) => {
+export const addChannelValidationSchema = yup.lazy((formData: any) => {
   if (isDefaultChannel(getChannelKind(formData.type))) {
     return yup.object().shape({
       application: applicationNameValidationSchema,

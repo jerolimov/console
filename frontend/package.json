@@ -194,6 +194,7 @@
     "@types/react-transition-group": "2.x",
     "@types/react-virtualized": "9.x",
     "@types/webpack": "4.x",
+    "@types/yup": "^0.29.7",
     "babel-loader": "^8.1.0",
     "bootstrap-sass": "^3.3.7",
     "browser-env": "3.x",
