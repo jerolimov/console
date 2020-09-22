@@ -1,6 +1,6 @@
 import * as _ from 'lodash-es';
 
-import { ContainerSpec, ContainerStatus, PodKind } from './';
+import { ContainerSpec, ContainerStatus, ContainerState, PodKind } from './';
 
 const PullPolicy = {
   Always: {
@@ -26,8 +26,14 @@ const PullPolicy = {
 // Parses the state from k8s container info field of a pod.
 // Returned object will always have a 'label' property,
 // but existence of other properties vary depending on the state.
-export const getContainerState = (containerStatus: ContainerStatus): any => {
-  const state: any = {
+export const getContainerState = (containerStatus: ContainerStatus) => {
+  const state: ContainerState & {
+    label: string;
+    value?: string;
+    exitCode?: number;
+    startedAt?: string;
+    finishedAt?: string;
+  } = {
     label: 'Unknown',
   };
   if (!containerStatus || !containerStatus.state) {
