@@ -1,5 +1,7 @@
 import * as _ from 'lodash';
 import {
+  PodKind,
+  ContainerStatus,
   K8sResourceKind,
   K8sKind,
   SelfSubjectAccessReviewKind,
@@ -12,17 +14,17 @@ import { PodControllerOverviewItem, DeploymentStrategy } from '../types';
 
 export const podStatus = Object.keys(podColor);
 
-const isContainerFailedFilter = (containerStatus) => {
+const isContainerFailedFilter = (containerStatus: ContainerStatus) => {
   return containerStatus.state.terminated && containerStatus.state.terminated.exitCode !== 0;
 };
 
-export const isContainerLoopingFilter = (containerStatus) => {
+export const isContainerLoopingFilter = (containerStatus: ContainerStatus) => {
   return (
     containerStatus.state.waiting && containerStatus.state.waiting.reason === 'CrashLoopBackOff'
   );
 };
 
-const numContainersReadyFilter = (pod) => {
+const numContainersReadyFilter = (pod: PodKind) => {
   const {
     status: { containerStatuses },
   } = pod;
@@ -35,7 +37,7 @@ const numContainersReadyFilter = (pod) => {
   return numReady;
 };
 
-const isReady = (pod) => {
+const isReady = (pod: PodKind) => {
   const {
     spec: { containers },
   } = pod;
@@ -45,7 +47,7 @@ const isReady = (pod) => {
   return numReady === total;
 };
 
-const podWarnings = (pod) => {
+const podWarnings = (pod: PodKind) => {
   const {
     status: { phase, containerStatuses },
   } = pod;
@@ -70,7 +72,7 @@ const podWarnings = (pod) => {
   return null;
 };
 
-export const getPodStatus = (pod) => {
+export const getPodStatus = (pod: PodKind) => {
   if (_.has(pod, ['metadata', 'deletionTimestamp'])) {
     return AllPodStatus.Terminating;
   }
