@@ -16,7 +16,8 @@
     "check-cycles": "CHECK_CYCLES=true yarn dev-once",
     "coverage": "jest --coverage .",
     "eslint": "eslint --ext .js,.jsx,.ts,.tsx,.json,.gql,.graphql --color",
-    "lint": "NODE_OPTIONS=--max-old-space-size=4096 yarn eslint .",
+    "lint": "NODE_OPTIONS=--max-old-space-size=4096 yarn eslint . && yarn stylelint",
+    "stylelint": "stylelint public/**/*.css public/**/*.scss packages/**/*.css packages/**/*.scss",
     "test": "jest",
     "debug-test": "node --inspect-brk node_modules/.bin/jest --runInBand",
     "webdriver-update": "webdriver-manager update",
@@ -249,6 +250,9 @@
     "resolve-url-loader": "2.x",
     "sass-loader": "6.x",
     "style-loader": "^0.23.1",
+    "stylelint": "^13.7.2",
+    "stylelint-config-sass-guidelines": "^7.1.0",
+    "stylelint-config-standard": "^20.0.0",
     "thread-loader": "1.x",
     "ts-jest": "21.x",
     "ts-loader": "^6.2.2",
@@ -275,6 +279,7 @@
     }
   },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx,json,gql,graphql}": "eslint --color --fix"
+    "*.{js,jsx,ts,tsx,json,gql,graphql}": "eslint --color --fix",
+    "*.{css,scss}": "stylelint"
   }
 }

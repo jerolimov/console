@@ -1,0 +1,8 @@
+{
+  "name": "@console/stylelint-config",
+  "version": "0.0.0-fixed",
+  "description": "OpenShift stylelint configuration",
+  "private": true,
+  "scripts": {},
+  "dependencies": {}
+}

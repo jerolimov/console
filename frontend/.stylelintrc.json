@@ -1,0 +1,11 @@
+{
+  "extends": "stylelint-config-sass-guidelines",
+  "ignoreFiles": ["public/dist/*"],
+  "rules": {
+    "rule-empty-line-before": null,
+    "order/properties-alphabetical-order": null,
+    "selector-class-pattern": "[a-z_]+",
+    "max-nesting-depth": 4,
+    "selector-max-id": 1
+  }
+}

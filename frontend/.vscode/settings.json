@@ -15,6 +15,12 @@
   "[json]": {
     "editor.formatOnSave": true
   },
+  "[css]": {
+    "editor.formatOnSave": true
+  },
+  "[scss]": {
+    "editor.formatOnSave": true
+  },
   "[graphql]": {
     "editor.formatOnSave": true
   },
