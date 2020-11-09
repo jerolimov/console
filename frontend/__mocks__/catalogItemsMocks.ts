@@ -1,3 +1,5 @@
+import { DeveloperConsoleCatalogCategory } from '@console/internal/components/catalog/catalog-items';
+
 export const catalogListPageProps = {
   namespace: 'default',
   helmCharts: {
@@ -2035,7 +2037,7 @@ export const catalogItems = [
   },
 ];
 
-export const catalogCategories = {
+export const catalogCategories: Record<string, DeveloperConsoleCatalogCategory> = {
   all: {
     id: 'all',
     numItems: 20,

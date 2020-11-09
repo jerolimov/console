@@ -17,10 +17,22 @@ export type CatalogTileViewPageState = {
   detailsItem: Item;
 };
 
-export const catalogCategories: Record<
-  string,
-  Record<string, string | Record<string, string | Record<string, any>>>
-> = {
+export interface DeveloperConsoleCatalogCategory {
+  id: string;
+  label: string;
+  field?: string;
+  values?: string[];
+  subcategories?: Record<string, DeveloperConsoleCatalogSubcategory>;
+}
+
+export interface DeveloperConsoleCatalogSubcategory {
+  id: string;
+  label: string;
+  field?: string;
+  values?: string[];
+}
+
+export const catalogCategories: Record<string, DeveloperConsoleCatalogCategory> = {
   languages: {
     id: 'languages',
     label: 'Languages',
