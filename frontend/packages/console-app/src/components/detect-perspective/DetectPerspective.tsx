@@ -23,19 +23,27 @@ const DetectPerspective: React.FC<DetectPerspectiveProps> = ({
   activePerspective,
   children,
   setActivePerspective,
-}) =>
-  activePerspective ? (
+}) => {
+  // eslint-disable-next-line no-console
+  console.warn('activePerspective', activePerspective);
+  return activePerspective ? (
     <>{children}</>
   ) : (
     <PerspectiveDetector setActivePerspective={setActivePerspective} />
   );
+};
 
 const mapStateToProps = (state: RootState) => ({
   activePerspective: getActivePerspective(state),
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  setActivePerspective: (perspective) => dispatch(UIActions.setActivePerspective(perspective)),
+  setActivePerspective: (perspective) =>
+    setTimeout(() => {
+      // eslint-disable-next-line no-console
+      console.warn('5111 dispatch perspective', perspective);
+      dispatch(UIActions.setActivePerspective(perspective));
+    }, 10000),
 });
 
 // For testing

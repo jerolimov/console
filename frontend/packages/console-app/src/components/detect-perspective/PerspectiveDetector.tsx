@@ -22,8 +22,12 @@ const PerspectiveDetector: React.FC<PerspectiveDetectorProps> = ({ setActivePers
 
   React.useEffect(() => {
     if (detectedPerspective) {
+      // eslint-disable-next-line no-console
+      console.warn('5111 setActivePerspective 1', detectedPerspective);
       setActivePerspective(detectedPerspective);
     } else if (detectors.length < 1 || detectionComplete) {
+      // eslint-disable-next-line no-console
+      console.warn('5111 setActivePerspective 2', defaultPerspective.properties.id);
       setActivePerspective(defaultPerspective.properties.id); // set default perspective if there are no detectors or none of the detections were successfull
     }
   }, [

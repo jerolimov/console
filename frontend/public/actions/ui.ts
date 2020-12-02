@@ -218,6 +218,8 @@ export const setActiveNamespace = (namespace: string = '') => {
 export const setActivePerspective = (perspective: string) => {
   // remember the most recently-viewed perspective, which is automatically
   // selected when returning to the console
+  // eslint-disable-next-line no-console
+  console.warn('5111 save perspective', perspective);
   localStorage.setItem(LAST_PERSPECTIVE_LOCAL_STORAGE_KEY, perspective);
   return action(ActionType.SetActivePerspective, { perspective });
 };

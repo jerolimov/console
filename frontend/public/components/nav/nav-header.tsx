@@ -36,6 +36,8 @@ const NavHeader_: React.FC<NavHeaderProps & StateProps> = ({
     (event: React.MouseEvent<HTMLLinkElement>, perspective: Perspective): void => {
       event.preventDefault();
       if (perspective.properties.id !== activePerspective) {
+        // eslint-disable-next-line no-console
+        console.warn('5111 header set perspective', perspective.properties.id);
         setActivePerspective(perspective.properties.id);
         history.push(perspective.properties.getLandingPageURL(flags));
       }
