@@ -1,10 +1,15 @@
 import * as React from 'react';
 import { mount } from 'enzyme';
 import { Perspective, useExtensions } from '@console/plugin-sdk';
+import { usePerspective } from '@console/shared';
 import PerspectiveDetector from '../PerspectiveDetector';
 
 jest.mock('@console/plugin-sdk', () => ({
   useExtensions: jest.fn(),
+}));
+
+jest.mock('@console/shared', () => ({
+  usePerspective: jest.fn(),
 }));
 
 const mockPerspectives = [
@@ -26,32 +31,34 @@ const mockPerspectives = [
   },
 ] as Perspective[];
 
-const setActivePerspective = jest.fn();
-
 describe('PerspectiveDetector', () => {
   it('should set default perspective if there are no perspective detectors available', () => {
+    const setPerspective = jest.fn();
     (useExtensions as jest.Mock).mockImplementation(() => mockPerspectives);
+    (usePerspective as jest.Mock).mockImplementation(() => ({ setPerspective }));
 
-    const wrapper = mount(<PerspectiveDetector setActivePerspective={setActivePerspective} />);
+    const wrapper = mount(<PerspectiveDetector />);
     expect(wrapper.isEmptyRender()).toBe(true);
-    expect(setActivePerspective).toHaveBeenCalledWith('admin');
+    expect(setPerspective).toHaveBeenCalledWith('admin');
   });
 
   it('should set detected perspective if detection is successful', () => {
+    const setPerspective = jest.fn();
     mockPerspectives[1].properties.usePerspectiveDetection = () => [true, false];
-    (useExtensions as jest.Mock).mockImplementation(() => mockPerspectives);
+    (usePerspective as jest.Mock).mockImplementation(() => ({ setPerspective }));
 
-    const wrapper = mount(<PerspectiveDetector setActivePerspective={setActivePerspective} />);
+    const wrapper = mount(<PerspectiveDetector />);
     expect(wrapper.isEmptyRender()).toBe(true);
-    expect(setActivePerspective).toHaveBeenCalledWith('dev');
+    expect(setPerspective).toHaveBeenCalledWith('dev');
   });
 
   it('should set default perspective if detection fails', () => {
+    const setPerspective = jest.fn();
     mockPerspectives[1].properties.usePerspectiveDetection = () => [false, false];
-    (useExtensions as jest.Mock).mockImplementation(() => mockPerspectives);
+    (usePerspective as jest.Mock).mockImplementation(() => ({ setPerspective }));
 
-    const wrapper = mount(<PerspectiveDetector setActivePerspective={setActivePerspective} />);
+    const wrapper = mount(<PerspectiveDetector />);
     expect(wrapper.isEmptyRender()).toBe(true);
-    expect(setActivePerspective).toHaveBeenCalledWith('admin');
+    expect(setPerspective).toHaveBeenCalledWith('admin');
   });
 });

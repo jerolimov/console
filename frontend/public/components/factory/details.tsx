@@ -2,7 +2,7 @@ import * as React from 'react';
 import { match } from 'react-router-dom';
 import * as _ from 'lodash-es';
 
-import { getBadgeFromType } from '@console/shared';
+import { getBadgeFromType, useNamespace } from '@console/shared';
 import { useExtensions, ResourceTabPage, isResourceTabPage } from '@console/plugin-sdk';
 import { withFallback } from '@console/shared/src/components/error/error-boundary';
 import {
@@ -26,6 +26,7 @@ import { ErrorBoundaryFallback } from '../error';
 import { breadcrumbsForDetailsPage } from '../utils/breadcrumbs';
 
 export const DetailsPage = withFallback<DetailsPageProps>(({ pages = [], ...props }) => {
+  const { namespace: activeNamespace } = useNamespace();
   const resourceKeys = _.map(props.resources, 'prop');
 
   const renderAsyncComponent = (page: ResourceTabPage, cProps: PageComponentProps) => (
@@ -76,7 +77,7 @@ export const DetailsPage = withFallback<DetailsPageProps>(({ pages = [], ...prop
         breadcrumbsFor={
           props.breadcrumbsFor
             ? props.breadcrumbsFor
-            : breadcrumbsForDetailsPage(props.kindObj, props.match)
+            : breadcrumbsForDetailsPage(activeNamespace, props.kindObj, props.match)
         }
         resourceKeys={resourceKeys}
         getResourceStatus={props.getResourceStatus}

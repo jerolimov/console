@@ -3,10 +3,9 @@ import { connect } from 'react-redux';
 import { NavItemSeparator } from '@patternfly/react-core';
 import { useTranslation } from 'react-i18next';
 
-import { FLAGS } from '@console/shared';
+import { FLAGS, useNamespace } from '@console/shared';
 import { formatNamespacedRouteForResource } from '@console/shared/src/utils';
 import { featureReducerName } from '../../reducers/features';
-import { LAST_NAMESPACE_NAME_LOCAL_STORAGE_KEY } from '@console/shared/src/constants';
 import { ALL_NAMESPACES_KEY } from '@console/shared/src/constants/common';
 
 import {
@@ -99,11 +98,11 @@ const MonitoringNavSection_ = ({ canAccess }) => {
 const MonitoringNavSection = connect(monitoringNavSectionStateToProps)(MonitoringNavSection_);
 
 const AdminNav = () => {
-  const lastNamespace = localStorage.getItem(LAST_NAMESPACE_NAME_LOCAL_STORAGE_KEY);
   // In OpenShift, machines are created in the openshift-machine-api namespace.
   // Switch to that namespace so the list isn't empty.
   // If "all projects" was last selected, however, use "all projects" instead.
-  const machineNS = lastNamespace === ALL_NAMESPACES_KEY ? lastNamespace : 'openshift-machine-api';
+  const { namespace } = useNamespace();
+  const machineNS = namespace === ALL_NAMESPACES_KEY ? namespace : 'openshift-machine-api';
   const { t } = useTranslation();
   return (
     <>
@@ -128,37 +127,90 @@ const AdminNav = () => {
           name={t('nav~Explore')}
           startsWith={apiExplorerStartsWith}
         />
-        <ResourceNSLink id="events" resource="events" name={t('nav~Events')} />
+        <ResourceNSLink
+          id="events"
+          resource="events"
+          name={t('nav~Events')}
+          activeNamespace={namespace}
+        />
       </NavSection>
 
       <NavSection id="operators" title={t('nav~Operators')} />
 
       <NavSection id="workloads" title={t('nav~Workloads')}>
-        <ResourceNSLink id="pods" resource="pods" name={t('nav~Pods')} />
-        <ResourceNSLink id="deployments" resource="deployments" name={t('nav~Deployments')} />
+        <ResourceNSLink
+          id="pods"
+          resource="pods"
+          name={t('nav~Pods')}
+          activeNamespace={namespace}
+        />
+        <ResourceNSLink
+          id="deployments"
+          resource="deployments"
+          name={t('nav~Deployments')}
+          activeNamespace={namespace}
+        />
         <ResourceNSLink
           id="deploymentconfigs"
           resource="deploymentconfigs"
           name={t('nav~Deployment Configs')}
+          activeNamespace={namespace}
           required={FLAGS.OPENSHIFT}
         />
-        <ResourceNSLink id="statefulsets" resource="statefulsets" name={t('nav~Stateful Sets')} />
-        <ResourceNSLink id="secrets" resource="secrets" name={t('nav~Secrets')} />
-        <ResourceNSLink id="configmaps" resource="configmaps" name={t('nav~Config Maps')} />
+        <ResourceNSLink
+          id="statefulsets"
+          resource="statefulsets"
+          name={t('nav~Stateful Sets')}
+          activeNamespace={namespace}
+        />
+        <ResourceNSLink
+          id="secrets"
+          resource="secrets"
+          name={t('nav~Secrets')}
+          activeNamespace={namespace}
+        />
+        <ResourceNSLink
+          id="configmaps"
+          resource="configmaps"
+          name={t('nav~Config Maps')}
+          activeNamespace={namespace}
+        />
         <Separator id="WorkloadsSeparator" name={t('nav~WorkloadsSeparator')} />
-        <ResourceNSLink id="cronjobs" resource="cronjobs" name={t('nav~Cron Jobs')} />
-        <ResourceNSLink id="jobs" resource="jobs" name={t('nav~Jobs')} />
-        <ResourceNSLink id="daemonsets" resource="daemonsets" name={t('nav~Daemon Sets')} />
-        <ResourceNSLink id="replicasets" resource="replicasets" name={t('nav~Replica Sets')} />
+        <ResourceNSLink
+          id="cronjobs"
+          resource="cronjobs"
+          name={t('nav~Cron Jobs')}
+          activeNamespace={namespace}
+        />
+        <ResourceNSLink
+          id="jobs"
+          resource="jobs"
+          name={t('nav~Jobs')}
+          activeNamespace={namespace}
+        />
+        <ResourceNSLink
+          id="daemonsets"
+          resource="daemonsets"
+          name={t('nav~Daemon Sets')}
+          activeNamespace={namespace}
+        />
+        <ResourceNSLink
+          id="replicasets"
+          resource="replicasets"
+          name={t('nav~Replica Sets')}
+          activeNamespace={namespace}
+        />
         <ResourceNSLink
           id="replicationcontrollers"
           resource="replicationcontrollers"
           name={t('nav~Replication Controllers')}
+          activeNamespace={namespace}
         />
         <ResourceNSLink
           id="horizontalpodautoscalers"
           resource="horizontalpodautoscalers"
           name={t('nav~Horizontal Pod Autoscalers')}
+          activeNamespace={namespace}
         />
       </NavSection>
 
@@ -167,18 +219,30 @@ const AdminNav = () => {
       <NavSection id="serverless" title={t('nav~Serverless')} />
 
       <NavSection id="networking" title={t('nav~Networking')}>
-        <ResourceNSLink id="services" resource="services" name={t('nav~Services')} />
+        <ResourceNSLink
+          id="services"
+          resource="services"
+          name={t('nav~Services')}
+          activeNamespace={namespace}
+        />
         <ResourceNSLink
           id="routes"
           resource="routes"
           name={t('nav~Routes')}
+          activeNamespace={namespace}
           required={FLAGS.OPENSHIFT}
         />
-        <ResourceNSLink id="ingresses" resource="ingresses" name={t('nav~Ingresses')} />
+        <ResourceNSLink
+          id="ingresses"
+          resource="ingresses"
+          name={t('nav~Ingresses')}
+          activeNamespace={namespace}
+        />
         <ResourceNSLink
           id="networkpolicies"
           resource="networkpolicies"
           name={t('nav~Network Policies')}
+          activeNamespace={namespace}
         />
       </NavSection>
 
@@ -193,6 +257,7 @@ const AdminNav = () => {
           id="persistentvolumeclaims"
           resource="persistentvolumeclaims"
           name={t('nav~Persistent Volume Claims')}
+          activeNamespace={namespace}
         />
         <ResourceClusterLink
           id="storageclasses"
@@ -203,6 +268,7 @@ const AdminNav = () => {
           id="volumesnapshots"
           resource={referenceForModel(VolumeSnapshotModel)}
           name={t('nav~Volume Snapshots')}
+          activeNamespace={namespace}
         />
         <ResourceClusterLink
           id="volumesnapshotclasses"
@@ -212,12 +278,23 @@ const AdminNav = () => {
       </NavSection>
 
       <NavSection id="builds" title={t('nav~Builds')} required={FLAGS.OPENSHIFT}>
-        <ResourceNSLink id="buildconfigs" resource="buildconfigs" name={t('nav~Build Configs')} />
-        <ResourceNSLink id="builds" resource="builds" name={t('nav~Builds')} />
+        <ResourceNSLink
+          id="buildconfigs"
+          resource="buildconfigs"
+          name={t('nav~Build Configs')}
+          activeNamespace={namespace}
+        />
+        <ResourceNSLink
+          id="builds"
+          resource="builds"
+          name={t('nav~Builds')}
+          activeNamespace={namespace}
+        />
         <ResourceNSLink
           id="imagestreams"
           resource="imagestreams"
           name={t('nav~Image Streams')}
+          activeNamespace={namespace}
           startsWith={imagestreamsStartsWith}
         />
       </NavSection>
@@ -317,17 +394,20 @@ const AdminNav = () => {
           id="serviceaccounts"
           resource="serviceaccounts"
           name={t('nav~Service Accounts')}
+          activeNamespace={namespace}
         />
         <ResourceNSLink
           id="roles"
           resource="roles"
           name={t('nav~Roles')}
+          activeNamespace={namespace}
           startsWith={rolesStartsWith}
         />
         <ResourceNSLink
           id="rolebindings"
           resource="rolebindings"
           name={t('nav~Role Bindings')}
+          activeNamespace={namespace}
           startsWith={rolebindingsStartsWith}
         />
       </NavSection>
@@ -351,9 +431,15 @@ const AdminNav = () => {
           id="resourcequotas"
           resource="resourcequotas"
           name={t('nav~Resource Quotas')}
+          activeNamespace={namespace}
           startsWith={quotaStartsWith}
         />
-        <ResourceNSLink id="roles" resource="limitranges" name={t('nav~Limit Ranges')} />
+        <ResourceNSLink
+          id="roles"
+          resource="limitranges"
+          name={t('nav~Limit Ranges')}
+          activeNamespace={namespace}
+        />
         <HrefLink
           id="metering"
           href={formatNamespacedRouteForResource(

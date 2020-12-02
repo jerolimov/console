@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as _ from 'lodash-es';
 
-import { Status } from '@console/shared';
+import { Status, useNamespace } from '@console/shared';
 import {
   ContainerLifecycle,
   ContainerLifecycleStage,
@@ -366,40 +366,44 @@ const ContainerDetails: React.FC<ContainerDetailsProps> = (props) => {
 };
 ContainerDetails.displayName = 'ContainerDetails';
 
-export const ContainersDetailsPage: React.FC<ContainerDetailsPageProps> = (props) => (
-  <div>
-    <Firehose
-      resources={[
-        {
-          name: props.match.params.podName,
-          namespace: props.match.params.ns,
-          kind: 'Pod',
-          isList: false,
-          prop: 'obj',
-        },
-      ]}
-    >
-      <PageHeading
-        detail={true}
-        title={props.match.params.name}
-        kind="Container"
-        breadcrumbsFor={() => [
-          { name: 'Pods', path: getBreadcrumbPath(props.match, 'pods') },
+export const ContainersDetailsPage: React.FC<ContainerDetailsPageProps> = (props) => {
+  const { namespace } = useNamespace();
+  return (
+    <div>
+      <Firehose
+        resources={[
           {
             name: props.match.params.podName,
-            path: resourcePath('Pod', props.match.params.podName, props.match.params.ns),
+            namespace: props.match.params.ns,
+            kind: 'Pod',
+            isList: false,
+            prop: 'obj',
           },
-          { name: 'Container Details', path: props.match.url },
         ]}
-      />
-      <HorizontalNav
-        hideNav={true}
-        pages={[{ name: 'container', href: '', component: ContainerDetails }]}
-        match={props.match}
-      />
-    </Firehose>
-  </div>
-);
+      >
+        <PageHeading
+          detail={true}
+          title={props.match.params.name}
+          kind="Container"
+          breadcrumbsFor={() => [
+            { name: 'Pods', path: getBreadcrumbPath(namespace, props.match, 'pods') },
+            {
+              name: props.match.params.podName,
+              path: resourcePath('Pod', props.match.params.podName, props.match.params.ns),
+            },
+            { name: 'Container Details', path: props.match.url },
+          ]}
+        />
+        <HorizontalNav
+          hideNav={true}
+          pages={[{ name: 'container', href: '', component: ContainerDetails }]}
+          match={props.match}
+        />
+      </Firehose>
+    </div>
+  );
+};
+
 ContainersDetailsPage.displayName = 'ContainersDetailsPage';
 
 type LifecycleProps = {

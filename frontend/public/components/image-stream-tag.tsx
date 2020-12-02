@@ -9,6 +9,7 @@ import { humanizeBinaryBytes } from './utils/units';
 import { ExampleDockerCommandPopover } from './image-stream';
 import { ImageStreamTimeline } from './image-stream-timeline';
 import { getBreadcrumbPath } from '@console/internal/components/utils/breadcrumbs';
+import { useNamespace } from '@console/shared';
 
 const ImageStreamTagsReference: K8sResourceKindReference = 'ImageStreamTag';
 const ImageStreamsReference: K8sResourceKindReference = 'ImageStream';
@@ -173,37 +174,43 @@ const pages = [
   navFactory.editYaml(),
   navFactory.history(ImageStreamTagHistory),
 ];
-export const ImageStreamTagsDetailsPage: React.SFC<ImageStreamTagsDetailsPageProps> = (props) => (
-  <DetailsPage
-    {...props}
-    breadcrumbsFor={(obj) => {
-      const { imageStreamName } = getImageStreamNameAndTag(obj);
-      return [
-        { name: 'Image Streams', path: getBreadcrumbPath(props.match, 'imagestreams') },
+export const ImageStreamTagsDetailsPage: React.SFC<ImageStreamTagsDetailsPageProps> = (props) => {
+  const { namespace } = useNamespace();
+  return (
+    <DetailsPage
+      {...props}
+      breadcrumbsFor={(obj) => {
+        const { imageStreamName } = getImageStreamNameAndTag(obj);
+        return [
+          {
+            name: 'Image Streams',
+            path: getBreadcrumbPath(namespace, props.match, 'imagestreams'),
+          },
+          {
+            name: imageStreamName,
+            path: `${getBreadcrumbPath(namespace, props.match, 'imagestreams')}/${imageStreamName}`,
+          },
+          {
+            name: 'Image Stream Tag Details',
+            path: props.match.url,
+          },
+        ];
+      }}
+      kind={ImageStreamTagsReference}
+      menuActions={menuActions}
+      resources={[
         {
-          name: imageStreamName,
-          path: `${getBreadcrumbPath(props.match, 'imagestreams')}/${imageStreamName}`,
+          kind: ImageStreamsReference,
+          name: parseName(props.name),
+          namespace: props.namespace,
+          isList: false,
+          prop: 'imageStream',
         },
-        {
-          name: 'Image Stream Tag Details',
-          path: props.match.url,
-        },
-      ];
-    }}
-    kind={ImageStreamTagsReference}
-    menuActions={menuActions}
-    resources={[
-      {
-        kind: ImageStreamsReference,
-        name: parseName(props.name),
-        namespace: props.namespace,
-        isList: false,
-        prop: 'imageStream',
-      },
-    ]}
-    pages={pages}
-  />
-);
+      ]}
+      pages={pages}
+    />
+  );
+};
 ImageStreamTagsDetailsPage.displayName = 'ImageStreamTagsDetailsPage';
 
 type ImageStreamTagHistoryProps = {

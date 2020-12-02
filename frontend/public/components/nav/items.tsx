@@ -17,8 +17,6 @@ import { stripBasePath } from '../utils';
 import { featureReducerName } from '../../reducers/features';
 import { RootState } from '../../redux';
 import { getActiveNamespace } from '../../reducers/ui';
-import { LAST_NAMESPACE_NAME_LOCAL_STORAGE_KEY } from '@console/shared/src/constants';
-import { ALL_NAMESPACES_KEY } from '@console/shared/src/constants/common';
 
 export const matchesPath = (resourcePath, prefix) =>
   resourcePath === prefix || _.startsWith(resourcePath, `${prefix}/`);
@@ -111,11 +109,7 @@ export class ResourceNSLink extends NavLink<ResourceNSLinkProps> {
 
   get to() {
     const { resource, activeNamespace } = this.props;
-    const lastNamespace = localStorage.getItem(LAST_NAMESPACE_NAME_LOCAL_STORAGE_KEY);
-    return formatNamespacedRouteForResource(
-      resource,
-      lastNamespace === ALL_NAMESPACES_KEY ? lastNamespace : activeNamespace,
-    );
+    return formatNamespacedRouteForResource(resource, activeNamespace);
   }
 }
 

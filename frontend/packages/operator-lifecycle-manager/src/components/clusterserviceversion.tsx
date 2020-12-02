@@ -22,6 +22,7 @@ import {
   getNamespace,
   getUID,
   StatusIconAndText,
+  useNamespace,
 } from '@console/shared';
 import {
   DetailsPage,
@@ -1065,6 +1066,8 @@ export const CSVSubscription: React.FC<CSVSubscriptionProps> = ({
 export const ClusterServiceVersionsDetailsPage: React.FC<ClusterServiceVersionsDetailsPageProps> = (
   props,
 ) => {
+  const { namespace } = useNamespace();
+
   const instancePagesFor = (obj: ClusterServiceVersionKind) => {
     const internalObjects = getInternalObjects(obj);
     const allInstancesPage: Page = {
@@ -1138,7 +1141,7 @@ export const ClusterServiceVersionsDetailsPage: React.FC<ClusterServiceVersionsD
       breadcrumbsFor={() => [
         {
           name: 'Installed Operators',
-          path: getBreadcrumbPath(props.match),
+          path: getBreadcrumbPath(namespace, props.match),
         },
         { name: 'Operator Details', path: props.match.url },
       ]}

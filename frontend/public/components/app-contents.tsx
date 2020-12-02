@@ -3,7 +3,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Redirect, Route, Switch } from 'react-router-dom';
 
-import { FLAGS } from '@console/shared';
+import { FLAGS, usePerspective } from '@console/shared';
 import { connectToFlags, flagPending, FlagsObject } from '../reducers/features';
 import { GlobalNotifications } from './global-notifications';
 import { NamespaceBar } from './namespace';
@@ -52,16 +52,18 @@ _.each(namespacedPrefixes, (p) => {
 });
 
 type DefaultPageProps = {
-  activePerspective: string;
   flags: FlagsObject;
 };
 
 // The default page component lets us connect to flags without connecting the entire App.
-const DefaultPage_: React.FC<DefaultPageProps> = ({ flags, activePerspective }) => {
+const DefaultPage_: React.FC<DefaultPageProps> = ({ flags }) => {
+  const { perspective: activePerspective, loaded } = usePerspective();
   const perspectiveExtensions = useExtensions<Perspective>(isPerspective);
-  if (Object.keys(flags).some((key) => flagPending(flags[key]))) {
+
+  if (!loaded || Object.keys(flags).some((key) => flagPending(flags[key]))) {
     return <LoadingBox />;
   }
+
   const perspective = perspectiveExtensions.find((p) => p.properties.id === activePerspective);
   // support redirecting to perspective landing page
   return flags[FLAGS.OPENSHIFT] ? (
@@ -71,9 +73,7 @@ const DefaultPage_: React.FC<DefaultPageProps> = ({ flags, activePerspective }) 
   );
 };
 
-const DefaultPage = connect((state: RootState) => ({
-  activePerspective: getActivePerspective(state),
-}))(connectToFlags(FLAGS.OPENSHIFT, FLAGS.CAN_LIST_NS)(DefaultPage_));
+const DefaultPage = connectToFlags(FLAGS.OPENSHIFT, FLAGS.CAN_LIST_NS)(DefaultPage_);
 
 const LazyRoute = (props) => (
   <Route
