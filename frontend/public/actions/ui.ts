@@ -9,7 +9,6 @@ import { OverviewItem } from '@console/shared';
 import {
   ALL_NAMESPACES_KEY,
   LAST_NAMESPACE_NAME_LOCAL_STORAGE_KEY,
-  LAST_PERSPECTIVE_LOCAL_STORAGE_KEY,
   COLUMN_MANAGEMENT_LOCAL_STORAGE_KEY,
 } from '@console/shared/src/constants';
 import { K8sResourceKind, PodKind, NodeKind } from '../module/k8s';
@@ -216,9 +215,6 @@ export const setActiveNamespace = (namespace: string = '') => {
 };
 
 export const setActivePerspective = (perspective: string) => {
-  // remember the most recently-viewed perspective, which is automatically
-  // selected when returning to the console
-  localStorage.setItem(LAST_PERSPECTIVE_LOCAL_STORAGE_KEY, perspective);
   return action(ActionType.SetActivePerspective, { perspective });
 };
 

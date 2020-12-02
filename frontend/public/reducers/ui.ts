@@ -7,7 +7,6 @@ import {
   ALL_APPLICATIONS_KEY,
   LAST_NAMESPACE_NAME_LOCAL_STORAGE_KEY,
   NAMESPACE_LOCAL_STORAGE_KEY,
-  LAST_PERSPECTIVE_LOCAL_STORAGE_KEY,
   PINNED_RESOURCES_LOCAL_STORAGE_KEY,
   COLUMN_MANAGEMENT_LOCAL_STORAGE_KEY,
 } from '@console/shared/src/constants';
@@ -15,24 +14,9 @@ import { isSilenced } from '../reducers/monitoring';
 import { legalNamePattern, getNamespace } from '../components/utils/link';
 import { OverviewSpecialGroup } from '../components/overview/constants';
 import { RootState } from '../redux';
-import { pluginStore } from '../plugins';
 import { Alert, AlertStates, RuleStates, SilenceStates } from '../components/monitoring/types';
-import { isPerspective } from '@console/plugin-sdk';
 
 export type UIState = ImmutableMap<string, any>;
-
-export function getDefaultPerspective() {
-  let activePerspective = localStorage.getItem(LAST_PERSPECTIVE_LOCAL_STORAGE_KEY);
-  const perspectiveExtensions = pluginStore.getAllExtensions().filter(isPerspective);
-  if (
-    activePerspective &&
-    !perspectiveExtensions.some((p) => p.properties.id === activePerspective)
-  ) {
-    // invalid saved perspective
-    activePerspective = undefined;
-  }
-  return activePerspective || undefined;
-}
 
 const newQueryBrowserQuery = (): ImmutableMap<string, any> =>
   ImmutableMap({
@@ -101,7 +85,7 @@ export default (state: UIState, action: UIAction): UIState => {
       location: pathname,
       activeNamespace: activeNamespace || ALL_NAMESPACES_KEY,
       activeApplication: ALL_APPLICATIONS_KEY,
-      activePerspective: getDefaultPerspective(),
+      activePerspective: undefined,
       createProjectMessage: '',
       overview: ImmutableMap({
         metrics: {},

@@ -1,9 +1,5 @@
 import * as _ from 'lodash-es';
-import {
-  ALL_NAMESPACES_KEY,
-  LAST_PERSPECTIVE_LOCAL_STORAGE_KEY,
-  PINNED_RESOURCES_LOCAL_STORAGE_KEY,
-} from '@console/shared';
+import { ALL_NAMESPACES_KEY, PINNED_RESOURCES_LOCAL_STORAGE_KEY } from '@console/shared';
 import { formatNamespacedRouteForResource } from '@console/shared/src/utils/namespace';
 import '../../__mocks__/localStorage';
 import store from '../../public/redux';
@@ -133,11 +129,6 @@ describe('ui-actions', () => {
         error: undefined,
         meta: undefined,
       });
-    });
-
-    it('sets active perspective in localStorage', () => {
-      setActivePerspective('test');
-      expect(localStorage.getItem(LAST_PERSPECTIVE_LOCAL_STORAGE_KEY)).toEqual('test');
     });
   });
 
