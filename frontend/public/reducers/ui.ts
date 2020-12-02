@@ -5,34 +5,16 @@ import { ActionType, UIAction } from '../actions/ui';
 import {
   ALL_NAMESPACES_KEY,
   ALL_APPLICATIONS_KEY,
-  LAST_NAMESPACE_NAME_LOCAL_STORAGE_KEY,
-  NAMESPACE_LOCAL_STORAGE_KEY,
-  LAST_PERSPECTIVE_LOCAL_STORAGE_KEY,
   PINNED_RESOURCES_LOCAL_STORAGE_KEY,
   COLUMN_MANAGEMENT_LOCAL_STORAGE_KEY,
 } from '@console/shared/src/constants';
 import { isSilenced } from '../reducers/monitoring';
-import { legalNamePattern, getNamespace } from '../components/utils/link';
+import { getNamespace } from '../components/utils/link';
 import { OverviewSpecialGroup } from '../components/overview/constants';
 import { RootState } from '../redux';
-import { pluginStore } from '../plugins';
 import { Alert, AlertStates, RuleStates, SilenceStates } from '../components/monitoring/types';
-import { isPerspective } from '@console/plugin-sdk';
 
 export type UIState = ImmutableMap<string, any>;
-
-export function getDefaultPerspective() {
-  let activePerspective = localStorage.getItem(LAST_PERSPECTIVE_LOCAL_STORAGE_KEY);
-  const perspectiveExtensions = pluginStore.getAllExtensions().filter(isPerspective);
-  if (
-    activePerspective &&
-    !perspectiveExtensions.some((p) => p.properties.id === activePerspective)
-  ) {
-    // invalid saved perspective
-    activePerspective = undefined;
-  }
-  return activePerspective || undefined;
-}
 
 const newQueryBrowserQuery = (): ImmutableMap<string, any> =>
   ImmutableMap({
@@ -69,20 +51,8 @@ export const silenceFiringAlerts = (firingAlerts, silences) => {
 
 export default (state: UIState, action: UIAction): UIState => {
   if (!state) {
+    console.warn('5111 create initialState');
     const { pathname } = window.location;
-
-    let activeNamespace = getNamespace(pathname);
-    if (!activeNamespace) {
-      const parsedFavorite = localStorage.getItem(NAMESPACE_LOCAL_STORAGE_KEY);
-      if (
-        _.isString(parsedFavorite) &&
-        (parsedFavorite.match(legalNamePattern) || parsedFavorite === ALL_NAMESPACES_KEY)
-      ) {
-        activeNamespace = parsedFavorite;
-      } else {
-        activeNamespace = localStorage.getItem(LAST_NAMESPACE_NAME_LOCAL_STORAGE_KEY);
-      }
-    }
 
     const storedPins = localStorage.getItem(PINNED_RESOURCES_LOCAL_STORAGE_KEY);
     const pinnedResources = storedPins ? JSON.parse(storedPins) : {};
@@ -99,9 +69,9 @@ export default (state: UIState, action: UIAction): UIState => {
     return ImmutableMap({
       activeNavSectionId: 'workloads',
       location: pathname,
-      activeNamespace: activeNamespace || ALL_NAMESPACES_KEY,
+      activeNamespace: ALL_NAMESPACES_KEY,
       activeApplication: ALL_APPLICATIONS_KEY,
-      activePerspective: getDefaultPerspective(),
+      activePerspective: undefined, // getDefaultPerspective(),
       createProjectMessage: '',
       overview: ImmutableMap({
         metrics: {},
