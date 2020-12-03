@@ -53,6 +53,7 @@ export const silenceFiringAlerts = (firingAlerts, silences) => {
 
 export default (state: UIState, action: UIAction): UIState => {
   if (!state) {
+    console.warn('5111 create initialState');
     const { pathname } = window.location;
 
     let activeNamespace = getNamespace(pathname);

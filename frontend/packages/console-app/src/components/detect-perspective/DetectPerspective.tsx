@@ -23,12 +23,13 @@ const DetectPerspective: React.FC<DetectPerspectiveProps> = ({
   activePerspective,
   children,
   setActivePerspective,
-}) =>
-  activePerspective ? (
+}) => {
+  return activePerspective ? (
     <>{children}</>
   ) : (
     <PerspectiveDetector setActivePerspective={setActivePerspective} />
   );
+};
 
 const mapStateToProps = (state: RootState) => ({
   activePerspective: getActivePerspective(state),
