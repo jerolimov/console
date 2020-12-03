@@ -46,7 +46,7 @@ describe('createConfigMap', () => {
 });
 
 describe('updateConfigMap', () => {
-  it('calls user settings api ', async () => {
+  it('calls user settings api with patch to update key ', async () => {
     coFetchMock.mockReturnValueOnce({
       json: () => configMap,
     });
@@ -64,6 +64,28 @@ describe('updateConfigMap', () => {
           'Content-Type': 'application/merge-patch+json;charset=UTF-8',
         },
         body: '{"data":{"key":"value"}}',
+      },
+    );
+  });
+
+  it('calls user settings api with patch to delete key', async () => {
+    coFetchMock.mockReturnValueOnce({
+      json: () => configMap,
+    });
+
+    const actual = await updateConfigMap(configMap, 'key', undefined);
+
+    expect(actual).toEqual(configMap);
+    expect(coFetchMock).toHaveBeenCalledTimes(1);
+    expect(coFetchMock).lastCalledWith(
+      '/api/kubernetes/api/v1/namespaces/openshift-console-user-settings/configmaps/user-settings-1234',
+      {
+        method: 'PATCH',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json-patch+json;charset=UTF-8',
+        },
+        body: '[{"op":"remove","path":"/data/key"}]',
       },
     );
   });

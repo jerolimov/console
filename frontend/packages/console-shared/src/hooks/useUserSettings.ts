@@ -77,7 +77,7 @@ export const useUserSettings = <T>(
   }, [cfLoadError, cfLoaded, fallbackLocalStorage]);
 
   React.useEffect(() => {
-    if (cfData && cfLoaded && settings !== undefined) {
+    if (cfLoaded && cfData) {
       const value = seralizeData(settings);
       if (value !== cfData.data?.[key]) {
         updateConfigMap(cfData, keyRef.current, value);

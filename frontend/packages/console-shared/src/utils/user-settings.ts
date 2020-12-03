@@ -24,11 +24,14 @@ export const updateConfigMap = async (
     ns: configMap.metadata.namespace,
     name: configMap.metadata.name,
   });
-  const patch = {
-    data: {
-      [key]: value,
-    },
-  };
+  const patch =
+    value === undefined
+      ? [{ op: 'remove', path: `/data/${key}` }]
+      : {
+          data: {
+            [key]: value,
+          },
+        };
   // Use JSON Merge Patch instead of normal JSON Patch because JSON Patch calls
   // fail if there is no data defined.
   try {
@@ -36,7 +39,10 @@ export const updateConfigMap = async (
       method: 'PATCH',
       headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/merge-patch+json;charset=UTF-8',
+        'Content-Type':
+          value === undefined
+            ? 'application/json-patch+json;charset=UTF-8'
+            : 'application/merge-patch+json;charset=UTF-8',
       },
       body: JSON.stringify(patch),
     });
@@ -62,6 +68,12 @@ export const deseralizeData = (data: string | null) => {
 export const seralizeData = <T>(data: T) => {
   if (typeof data === 'string') {
     return data;
+  }
+  if (data === null) {
+    return null;
+  }
+  if (data === undefined) {
+    return undefined;
   }
   return JSON.stringify(data);
 };
