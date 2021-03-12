@@ -111,11 +111,11 @@ const PerspectiveNav: React.FC<{}> = () => {
           const { id, name } = item.properties;
           return <NavSection id={id} title={name} key={id} isGrouped={!name} />;
         }
-        if (isNavItem(item)) {
-          return createLink(item, true);
-        }
         if (isSeparatorNavItem(item)) {
           return <NavItemSeparator key={`separator-${index}`} />;
+        }
+        if (isNavItem(item)) {
+          return createLink(item, true);
         }
       })}
       {pinnedResourcesLoaded && pinnedResources?.length ? (

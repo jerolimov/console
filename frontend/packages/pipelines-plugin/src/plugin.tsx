@@ -107,6 +107,7 @@ const plugin: Plugin<ConsumedExtensions> = [
         // t('pipelines-plugin~Pipelines')
         name: '%pipelines-plugin~Pipelines%',
         href: '/pipelines',
+        namespaced: true,
         'data-quickstart-id': 'qs-nav-pipelines',
       },
     },
@@ -124,6 +125,7 @@ const plugin: Plugin<ConsumedExtensions> = [
         // t('pipelines-plugin~Tasks')
         name: '%pipelines-plugin~Tasks%',
         href: '/tasks',
+        namespaced: true,
       },
     },
     flags: {
@@ -140,6 +142,7 @@ const plugin: Plugin<ConsumedExtensions> = [
         // t('pipelines-plugin~Triggers')
         name: '%pipelines-plugin~Triggers%',
         href: '/triggers',
+        namespaced: true,
       },
     },
     flags: {
